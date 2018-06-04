@@ -9,6 +9,7 @@
   "author": "Kamen Kirilov",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "npm": "^6.1.0"
