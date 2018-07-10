@@ -1,11 +1,30 @@
-<% include partials/header %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>YelpCamp</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   <link rel="stylesheet" href="/stylesheets/main.css">
+   <link rel="stylesheet" href="/stylesheets/landing.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js">
+</head>
+<body>
+
+
 
 <div class="container">
-   <h1>Welcome to Landing Page!</h1>
 
-   <p>Welcome to YelpCamp</p>
-
-   <a href="/campgrounds">View all Campgrounds</a>
+   <div id="landing-header">
+      <h1>Welcome to YelpCamp!</h1>
+      <a class="btn btn-success" href="/campgrounds">View all Campgrounds</a>
+   </div> <!-- end landing-header -->
 </div>
+
+<ul class="slideshow">
+   <li></li>
+   <li></li>
+   <li></li>
+   <li></li>
+   <li></li>
+</ul>
 
 <% include partials/footer %>

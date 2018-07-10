@@ -1,42 +1,51 @@
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
+const express               = require('express'),
+      app                   = express(),
+      methodOverride        = require('method-override'),
+      bodyParser            = require('body-parser'),
+      mongoose              = require('mongoose'),
+      passport              = require('passport'),
+      LocalStrategy         = require('passport-local'),
+      passportLocalMongoose = require('passport-local-mongoose'),
+      session               = require('express-session'),
+      port                  = 3000;
+// Schema Setup
+const User                  = require('./models/user'),
+      Campground            = require('./models/campground'),
+      Comment               = require('./models/comment');
+// Requring Routes Setup
+const campgroundRoutes      = require('./routes/campgrounds'),
+      commentRoutes         = require('./routes/comments'),
+      indexRoutes           = require('./routes/index');
+// Seed file for clear and populate the DB with sample data
+const seedDB                = require('./seeds');
 
+// Create and connect to a yelp_camp Database inside of MongoDB
+mongoose.connect('mongodb://localhost:27017/yelp_camp');
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'));
+app.use(methodOverride('_method'));
 app.set("view engine", "ejs");
+// seedDB(); // Seed the database
 
-let campgrounds = [
-   {name: "Bozveliisko", image: "https://farm2.staticflickr.com/1266/4701470104_07556d68d6.jpg"},
-   {name: "Mountain Pirin", image: "https://farm4.staticflickr.com/3053/2586934044_339a678e73.jpg"},
-   {name: "Salmon Creek", image: "https://farm3.staticflickr.com/2931/14128269785_f27fb630f3.jpg"},
-   {name: "Bozveliisko", image: "https://farm2.staticflickr.com/1266/4701470104_07556d68d6.jpg"},
-   {name: "Salmon Creek", image: "https://farm3.staticflickr.com/2931/14128269785_f27fb630f3.jpg"},
-   {name: "Mountain Pirin", image: "https://farm4.staticflickr.com/3053/2586934044_339a678e73.jpg"},
-   {name: "Bozveliisko", image: "https://farm2.staticflickr.com/1266/4701470104_07556d68d6.jpg"},
-   {name: "Salmon Creek", image: "https://farm3.staticflickr.com/2931/14128269785_f27fb630f3.jpg"},
-   {name: "Mountain Pirin", image: "https://farm4.staticflickr.com/3053/2586934044_339a678e73.jpg"}
-];
+// Passport Setup (First Session -> initialize -> Session !Important ORDER!)
+app.use(session({ secret: "kamen kirilov", resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+// Serialize and Deserialize to the User, require passport to work and give the LocalStrategy that we add ( LocalStrategy = require('passport-local'))
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-app.get("/", (req, res) => res.render("landing") );
-
-app.get("/campgrounds", (req, res) => {
-   res.render("campgrounds", {campgrounds: campgrounds});
+// Pass currentUser data to all routes to NOT be undefined, so not crashing
+app.use( (req, res, next) => {
+    res.locals.currentUser = req.user;
+    next();
 });
 
-app.post("/campgrounds", (req, res) => {
-   //get data from form and add to campgrounds array
-   const name = req.body.name;
-   const image = req.body.image;
-   const newCampground = {name: name, image: image}
-   campgrounds.push(newCampground);
-   //redirect back to campgrounds page
-    res.redirect('/campgrounds');
-});
-
-app.get("/campgrounds/new", (req, res) => {
-   res.render("new.ejs");
-});
+app.use('/campgrounds', campgroundRoutes);
+app.use('/campgrounds/:id/comments', commentRoutes);
+app.use('/', indexRoutes);
 
 
-
-app.listen(3000, () => console.log("The YelpCamp Server is started on port 3000!") );
+// Tell Express to listen for requests (start server)
+app.listen(port, () => console.log(`The YelpCamp Server is started on port ${port}!`) );

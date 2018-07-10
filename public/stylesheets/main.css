@@ -1,0 +1,32 @@
+
+/* show page */
+.img-thumbnail {
+   padding: 0;
+}
+
+.col-md-3 .btn {
+   margin-top: 9px;
+}
+
+.img-thumbnail img {
+   width: 100%;
+   max-height: 450px;
+}
+
+.img-thumbnail .caption-full {
+   padding: 9px;
+}
+
+.card {
+   margin-top: 15px;
+   padding: 9px;
+   background-color: #bbb;
+}
+
+#hide {
+   display: none;
+}
+
+#delete-form {
+   display: inline;
+}
